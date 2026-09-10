@@ -1,0 +1,28 @@
+name: Scheduled GitHub backup
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # runs daily at 02:00 UTC
+  workflow_dispatch:        # also allows manual trigger from GitHub UI
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run backup
+        env:
+          GITHUB_TOKEN: ${{ secrets.BACKUP_GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: python scripts/backup_runner.py
