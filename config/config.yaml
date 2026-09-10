@@ -1,0 +1,30 @@
+# Configuration for GitHub Backup and Recovery Framework
+# Edit these values to point at your own repository and S3 bucket.
+# Do not commit real AWS keys here -- use environment variables or AWS CLI profiles instead.
+
+github:
+  repo_owner: "your-github-username"
+  repo_name: "your-repo-name"
+  # Personal Access Token is read from the GITHUB_TOKEN environment variable,
+  # never stored in this file.
+
+aws:
+  s3_bucket: "github-backup-dissertation"
+  region: "ap-south-1"
+  # AWS credentials are read from environment variables or the default AWS CLI profile,
+  # never stored in this file.
+
+backup:
+  include_metadata: true
+  metadata_types:
+    - issues
+    - releases
+    # pull_requests intentionally excluded -- see dissertation scope notes.
+    # Merged/closed PRs cannot be faithfully restored as live, reviewable
+    # objects via the GitHub API, so PR backup is out of scope for this
+    # version and listed as future work.
+
+paths:
+  work_dir: "./work"
+  log_file: "./logs/backup_log.csv"
+  manifest_file: "./logs/manifest.json"
